@@ -12,7 +12,11 @@
 		<script src="collapsible.js"></script>
 		<script src="dragdrop.js"></script>	
 		<script src="files.js"></script>
-		<script src="convert.js"></script>	
+		<script>
+			modToXml = Module.cwrap('modToXml', 'string', ['string','number']);
+			resToXml = Module.cwrap('resToXml', 'string', ['string','number']);
+			xmlToRes = Module.cwrap('xmlToRes', 'string', ['string','number']);
+		</script>	
 		<script src="easytrain.js"></script>
 	</head>
 	<body style="width: 100%; margin: 0;" onload="setupPage()">
