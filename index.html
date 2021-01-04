@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<link rel="stylesheet" href="easytrain.css">
+		<link rel="stylesheet" href="collapsible.css">
+		<link rel="stylesheet" href="dragdrop.css">
+
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="collapsible.js"></script>
+		<script src="dragdrop.js"></script>	
+		<script src="files.js"></script>
+		<script>
+			modToXml = Module.cwrap('modToXml', 'string', ['string','number']);
+			resToXml = Module.cwrap('resToXml', 'string', ['string','number']);
+			xmlToRes = Module.cwrap('xmlToRes', 'string', ['string','number']);
+			getXmlResChar = Module.cwrap('getXmlResChar', 'number', ['number']);
+		</script>	
+		<script src="easytrain.js"></script>
+	</head>
+	<body style="width: 100%; margin: 0;" onload="setupPage()">
+		<div id="setup">
+			<h1>Easy Train</h1>
+			<ul>
+				<li>Name (first name + last initial, such as karenp): <input type="text" id="loginName" name="loginName"/></li>
+				<li>Easy Train File (.etm)<input type="file" id="fileEasy" accept=".etm"></li>
+				<li>(Optional) Previously Saved results (.etr)<input type="file" id="fileResults" accept=".etr*"></li>
+			</ul>
+			<button id="goBtn" name="goBtn" class="widebutton" onclick="loadEasyTrain()">Go</button>
+		</div>
+		<div id="easytrain">
+		</div>
+	</body>
+</html>
