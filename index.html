@@ -17,7 +17,7 @@
 			resToXml = Module.cwrap('resToXml', 'string', ['string','number']);
 			xmlToRes = Module.cwrap('xmlToRes', 'string', ['string','number']);
 			getXmlResChar = Module.cwrap('getXmlResChar', 'number', ['number']);
-		</script>	
+		</script>
 		<script src="easytrain.js"></script>
 	</head>
 	<body style="width: 100%; margin: 0;" onload="setupPage()">
@@ -25,7 +25,6 @@
 			<h1>Easy Train</h1>
 			<ul>
 				<li>Name (first name + last initial, such as karenp): <input type="text" id="loginName" name="loginName"/></li>
-				<li>Easy Train File (.etm)<input type="file" id="fileEasy" accept=".etm"></li>
 				<li>(Optional) Previously Saved results (.etr)<input type="file" id="fileResults" accept=".etr*"></li>
 			</ul>
 			<button id="goBtn" name="goBtn" class="widebutton" onclick="loadEasyTrain()">Go</button>

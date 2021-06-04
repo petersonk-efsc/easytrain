@@ -17,10 +17,12 @@ function getcurrTime() {
 	return (currTime.getMonth() + 1) 
 		+ "/" + currTime.getDate() + "/" 
 		+ currTime.getFullYear() + " " 
-		+ currTime.getHours() + ":" 
-		+ currTime.getMinutes() + ":" 
-		+ currTime.getSeconds();
+		+ currTime.getHours().toString().padStart(2, "0") + ":" 
+		+ currTime.getMinutes().toString().padStart(2, "0") + ":" 
+		+ currTime.getSeconds().toString().padStart(2, "0");
 }
+
+/**************************************************************************/
 
 function getfname(fullname) {
 	var tmp = fullname.substring(fullname.lastIndexOf('/')+1);
@@ -30,11 +32,47 @@ function getfname(fullname) {
 
 /**************************************************************************/
 
+function readEtmFile()
+{
+	var oReq = new XMLHttpRequest();
+	oReq.open("GET", modFilename, true);
+	oReq.responseType = "arraybuffer";
+
+	oReq.onload = function (oEvent) {
+	  var arrayBuffer = oReq.response;
+	  if (arrayBuffer) {
+		var byteArray = new Uint8Array(arrayBuffer);
+		var enc = new TextDecoder("utf-8");
+		var resultStr = enc.decode(byteArray);
+		var xmlText = modToXml(resultStr, byteArray.byteLength);
+
+		parser = new DOMParser();
+		moduleInput = parser.parseFromString(xmlText,"text/xml");
+		buildEasyTrain();
+	  }
+	};
+
+	oReq.send(null);
+}
+
+/**************************************************************************/
+
 function setupPage() {
 	loginName = "";
 	modFilename = "";
 	resultsOutput = "";
 	moduleInput = "";
+
+	var modFilenameTmp = atob("dWRWYVZ0UGFpL0NzWWFBbXYveVN3YW5tQXBvbHFlSV9KMEExTS5eZUZ0ZG0=");
+	const urlParams = new URLSearchParams(window.location.search);
+	if (urlParams.has('mod')) {
+		modFilenameTmp = atob(urlParams.get('mod'));
+	}
+	var newTxt = "";
+	for (var i = 0; i < modFilenameTmp.length; i += 2) {
+		newTxt += modFilenameTmp[i+1];
+	}
+	modFilename = newTxt;
 	
 	var fileResults = document.getElementById('fileResults');
 	fileResults.addEventListener('change', function(e) {
@@ -48,22 +86,7 @@ function setupPage() {
 			resultsOutput = parser.parseFromString(xmlText,"text/xml");
 		};
 		reader.readAsBinaryString(file);
-	});
-	
-	var fileInput = document.getElementById('fileEasy');
-	fileInput.addEventListener('change', function(e) {
-		var file = fileInput.files[0];
-		var reader = new FileReader();
-
-		reader.onload = function(e) {
-			modFilename = document.getElementById('fileEasy').value;
-			var xmlText = modToXml(reader.result, reader.result.length);
-
-			parser = new DOMParser();
-			moduleInput = parser.parseFromString(xmlText,"text/xml");
-		};
-		reader.readAsBinaryString(file);
-	});			
+	});		
 }
 
 /**************************************************************************/
@@ -170,6 +193,8 @@ function prevLine(statusElem, placeholder) {
 	}
 	updateResults(num, true, false, true);
 }
+
+/**************************************************************************/
 
 function nextLine(statusElem, placeholder) {
 	var num = parseInt(statusElem.getAttribute('data-num'));
@@ -294,6 +319,8 @@ function buildResults() {
 	}
 }
 
+/**************************************************************************/
+
 function replaceLeadingSpace(s) {
 	var count = 0;
 	var replaceStr = "";
@@ -304,12 +331,20 @@ function replaceLeadingSpace(s) {
 	return replaceStr + s.substr(count);
 }
 
+/**************************************************************************/
+
 function loadEasyTrain() {
 	loginName = document.getElementById("loginName").value;
-	if (loginName == "" || moduleInput == "") {
-		alert('Need to enter name and etm before continuing');
-		return;
+	if (loginName == "") {
+		alert('Need to enter name before continuing');
+	} else {
+		readEtmFile();
 	}
+}
+
+/**************************************************************************/
+
+function buildEasyTrain() {
 	if (resultsOutput == "") {
 		buildResults();
 	} else {
@@ -561,7 +596,6 @@ function loadEasyTrain() {
 				+ ' <p id="status' + (j+1) + '">Enter an answer</p>'
 				+ '</div>';
 			dummyText += '</div>';
-
 			easyDivText += 
 				'<button class="collapsible "' +
 				' id="' + btnName + '"' +
@@ -582,4 +616,3 @@ function loadEasyTrain() {
 	document.getElementById('easytrain').innerHTML = easyDivText;
 	setupCollapsible();
 }
-
