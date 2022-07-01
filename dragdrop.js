@@ -23,8 +23,9 @@ function drop(ev) {
   var num = parseInt(statusElem.getAttribute('data-num'));
   targetId = "drag" + ev.target.id;
   sourceId = ev.dataTransfer.getData("text") + "d";
+  ev.preventDefault();
   if (sourceId == targetId) {
-	ev.preventDefault();
+	//ev.preventDefault();
 	var data = ev.dataTransfer.getData("text");
 	ev.target.appendChild(document.getElementById(data));
 	statusElem.setAttribute('data-correct', parseInt(statusElem.getAttribute('data-correct')) + 1);
